@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 function RecipeGenerator() {
     const [ingredients, setIngredients] = useState('');
@@ -9,7 +11,7 @@ function RecipeGenerator() {
 
     const createRecipe = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/recipe-creator?ingredients=${ingredients}&dietaryRestrictions=${dietaryRestrictions}&cuisine=${cuisine}`)
+            const response = await fetch(`http://localhost:8080/api/recipe-creator?ingredients=${ingredients}&dietaryRestrictions=${dietaryRestrictions}&cuisine=${cuisine}`)
             const data = await response.text();
             console.log(data);
             setRecipe(data);
@@ -45,7 +47,7 @@ function RecipeGenerator() {
             <button onClick={createRecipe}>Create Recipe</button>
 
             <div className="output">
-                <pre className="recipe-text">{recipe}</pre>
+                <Markdown className="recipe-text">{recipe}</Markdown>
             </div>
         </div>
     );

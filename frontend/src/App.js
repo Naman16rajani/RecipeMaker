@@ -1,39 +1,33 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import ImageGenerator from './components/ImageGenerator';
 import ChatComponent from './components/ChatComponent';
 import RecipeGenerator from './components/RecipeGenerator';
+import SignupPage from "./components/SignUpPage";
+import {BrowserRouter, Route, Router, Routes} from "react-router-dom";
+import LoginPage from "./components/LoginPage";
+import Dashboard from "./components/Dashboard";
+
 
 function App() {
-  const [activeTab, setActiveTab] = useState('image-generator');
 
-  const handleTabChange = (tab) => {
-    //alert(tab)
-    setActiveTab(tab);
-  };
 
-  return (
-    <div className="App">
-      <button className={activeTab === 'image-generator' ? 'active' : ''}
-       onClick={() => handleTabChange('image-generator')}>
-        Image Generator
-        </button>
-      <button  className={activeTab === 'chat' ? 'active' : ''}
-      onClick={() => handleTabChange('chat')}>
-        Ask AI
-        </button>
-      <button className={activeTab === 'recipe-generator' ? 'active' : ''}
-      onClick={() => handleTabChange('recipe-generator')}>
-        Recipe Generator
-        </button>
+    return (
+        <div className="App">
+            <BrowserRouter>
 
-        <div>
-          {activeTab === 'image-generator' && <ImageGenerator/>}
-          {activeTab === 'chat' && <ChatComponent/>}
-          {activeTab === 'recipe-generator' && <RecipeGenerator/>}
+
+                <Routes>
+                    <Route path="/" index element={<LoginPage/>}/>
+                    <Route path="/signup" element={<SignupPage/>}/>
+                    <Route path="/dashboard" element={<Dashboard/>}/>
+                </Routes>
+
+            </BrowserRouter>
+
         </div>
-    </div>
-  );
+
+    );
 }
 
 export default App;
