@@ -11,13 +11,14 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-@RestController("/api")
+@RestController
+@RequestMapping("/api")
 public class GenAIController {
 
     private final ChatService chatService;
     private final RecipeService recipeService;
 
-    public GenAIController(ChatService chatService,  RecipeService recipeService) {
+    public GenAIController(ChatService chatService, RecipeService recipeService) {
         this.chatService = chatService;
         this.recipeService = recipeService;
     }
@@ -38,12 +39,16 @@ public class GenAIController {
     public String getResponse(@RequestBody Map<String, String> request) {
         String prompt = request.get("prompt");
         String image = request.get("image");
+        System.out.println("prompt "+prompt);
+        System.out.println("image "+image);
 
         if (image != null && !image.isEmpty()) {
             try {
                 String mimeType = inferMimeType(image);
                 byte[] imageBytes = Base64.getDecoder().decode(image); // Decode Base64 to byte array
-                return chatService.getResponseFromImage(prompt, imageBytes, mimeType);
+                String response = chatService.getResponseFromImage(prompt, imageBytes, mimeType);
+                System.out.println(response);
+                return response;
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("Invalid image encoding", e);
             }
@@ -51,37 +56,28 @@ public class GenAIController {
         return chatService.getResponse(prompt);
     }
 
-    @GetMapping("ask-ai-options")
-    public String getResponseOptions(@RequestParam String prompt) {
-        return chatService.getResponseOptions(prompt);
-    }
+    @PostMapping("recipe-creator")
+    public String recipeCreator(@RequestBody Map<String, String> request) {
+        // Get values with default if missing
+        String cuisine = request.getOrDefault("cuisine", "").trim();
+        String dietaryRestriction = request.getOrDefault("dietaryRestriction", "").trim();
+        String ingredients = request.getOrDefault("ingredients", "").trim();
 
+        // Set defaults if the values are empty
+        if (cuisine.isEmpty()) {
+            cuisine = "Indian";
+        }
+        if (dietaryRestriction.isEmpty()) {
+            dietaryRestriction = "veg";
+        }
+        if (ingredients.isEmpty()) {
+            ingredients = "carrot, sugar, ghee";
+        }
 
-    @GetMapping("generate-image")
-    public List<String> generateImages(HttpServletResponse response,
-                                       @RequestParam String prompt,
-                                       @RequestParam(defaultValue = "hd") String quality,
-                                       @RequestParam(defaultValue = "1") int n,
-                                       @RequestParam(defaultValue = "1024") int width,
-                                       @RequestParam(defaultValue = "1024") int height) throws IOException {
-//        ImageResponse imageResponse = imageService.generateImage(prompt, quality, n, width, height);
-//
-//        // Streams to get urls from ImageResponse
-//        List<String> imageUrls = imageResponse.getResults().stream()
-//                .map(result -> result.getOutput().getUrl())
-//                .toList();
-        List<String> imageUrls = new ArrayList<>();
-        imageUrls.add("https://example.com/image1.jpg");
-        imageUrls.add("https://example.com/image2.jpg");
-        imageUrls.add("https://example.com/image3.jpg");
-        return imageUrls;
-    }
-
-
-    @GetMapping("recipe-creator")
-    public String recipeCreator(@RequestParam String ingredients,
-                                @RequestParam(defaultValue = "any") String cuisine,
-                                @RequestParam(defaultValue = "") String dietaryRestriction) {
+        // Debugging output
+        System.out.println("Cuisine: " + cuisine);
+        System.out.println("Dietary Restriction: " + dietaryRestriction);
+        System.out.println("Ingredients: " + ingredients);
         return recipeService.createRecipe(ingredients, cuisine, dietaryRestriction);
     }
 

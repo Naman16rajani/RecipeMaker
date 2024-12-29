@@ -28,9 +28,6 @@ public class UserService implements UserDetailsService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    public User findUserProfileByJwt(String jwt){
-        return userRepository.findUserProfileByJwt(jwt);
-    }
 
 
     // Retrieve a user by ID
