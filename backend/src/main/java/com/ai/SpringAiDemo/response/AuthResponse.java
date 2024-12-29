@@ -15,4 +15,9 @@ public class AuthResponse {
     private String message;
     private Boolean status;
 
+ // Custom constructor for message and status
+    public AuthResponse(String message, Boolean status) {
+        this.message = message;
+        this.status = status;
+    }
 }

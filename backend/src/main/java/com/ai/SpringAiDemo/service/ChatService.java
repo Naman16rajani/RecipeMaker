@@ -47,14 +47,4 @@ public class ChatService {
             throw new RuntimeException(e);
         }
     }
-
-    public String getResponseOptions(String prompt) {
-        try {
-            GenerateContentResponse response = myModel.generateContent(prompt);
-            return ResponseHandler.getText(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

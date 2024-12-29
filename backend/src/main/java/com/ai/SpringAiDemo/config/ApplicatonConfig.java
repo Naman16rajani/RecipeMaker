@@ -36,7 +36,7 @@ public class ApplicatonConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration ccfg = new CorsConfiguration();
-            ccfg.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+            ccfg.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173"));
             ccfg.setAllowedMethods(Collections.singletonList("*"));
             ccfg.setAllowCredentials(true);
             ccfg.setAllowedHeaders(Collections.singletonList("*"));
